@@ -1,6 +1,8 @@
 variable "name" {}
 
-variable "s3_bucket_id" {}
+variable "s3_bucket_ids" {
+  type = list(string)
+}
 
 variable "hostnames" {
   type = list(string)

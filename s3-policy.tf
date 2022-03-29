@@ -1,9 +1,9 @@
 data "aws_iam_policy_document" "s3_policy" {
-  count = var.module_enabled ? 1 : 0
+  count = var.module_enabled ? length(data.aws_s3_bucket.selected) : 0
 
   statement {
     actions   = ["s3:GetObject"]
-    resources = ["${data.aws_s3_bucket.selected[0].arn}/*"]
+    resources = [data.aws_s3_bucket.selected[count.index].arn]
 
     principals {
       type        = "AWS"
@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "s3_policy" {
 
   statement {
     actions   = ["s3:ListBucket"]
-    resources = [data.aws_s3_bucket.selected[0].arn]
+    resources = [data.aws_s3_bucket.selected[count.index].arn]
 
     principals {
       type        = "AWS"
@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "s3_policy" {
       type        = "AWS"
       identifiers = ["*"]
     }
-    resources = [data.aws_s3_bucket.selected[0].arn, "${data.aws_s3_bucket.selected[0].arn}/*"]
+    resources = [data.aws_s3_bucket.selected[count.index].arn, "${data.aws_s3_bucket.selected[count.index].arn}/*"]
     condition {
       test     = "Bool"
       variable = "aws:SecureTransport"
@@ -39,8 +39,8 @@ data "aws_iam_policy_document" "s3_policy" {
 }
 
 resource "aws_s3_bucket_policy" "oai" {
-  count = var.module_enabled ? 1 : 0
+  count = var.module_enabled ? length(var.s3_bucket_ids) : 0
 
-  bucket = var.s3_bucket_id
-  policy = data.aws_iam_policy_document.s3_policy[0].json
+  bucket = var.s3_bucket_ids[count.index]
+  policy = data.aws_iam_policy_document.s3_policy[count.index].json
 }

@@ -14,15 +14,6 @@ resource "aws_cloudfront_distribution" "default" {
   default_root_object = var.default_root_object
   wait_for_deployment = var.wait_for_deployment
 
-  origin {
-    domain_name = data.aws_s3_bucket.selected[0].bucket_regional_domain_name
-    origin_id   = "s3Origin"
-
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.default[0].cloudfront_access_identity_path
-    }
-  }
-
   dynamic "origin" {
     for_each = [for i in var.dynamic_custom_origin_config : {
       domain_name              = i.domain_name
@@ -65,9 +56,9 @@ resource "aws_cloudfront_distribution" "default" {
   }
 
   dynamic "origin" {
-    for_each = [for i in var.dynamic_s3_origin_config : {
-      domain_name              = i.domain_name
-      origin_id                = i.origin_id
+    for_each = [for i,v in data.aws_s3_bucket.selected : {
+      domain_name              = v.bucket_regional_domain_name
+      origin_id                = "s3Origin${i}"
     }]
 
     content {
@@ -93,7 +84,7 @@ resource "aws_cloudfront_distribution" "default" {
   default_cache_behavior {
     allowed_methods  = var.default_cache_behavior_allowed_methods
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "s3Origin"
+    target_origin_id = "s3Origin0"
     compress         = true
 
     forwarded_values {
