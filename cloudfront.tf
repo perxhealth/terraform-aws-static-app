@@ -64,6 +64,22 @@ resource "aws_cloudfront_distribution" "default" {
     }
   }
 
+  dynamic "origin" {
+    for_each = [for i in var.dynamic_s3_origin_config : {
+      domain_name              = i.domain_name
+      origin_id                = i.origin_id
+    }]
+
+    content {
+      domain_name = origin.value.domain_name
+      origin_id   = origin.value.origin_id
+
+      s3_origin_config {
+        origin_access_identity   = aws_cloudfront_origin_access_identity.default[0].cloudfront_access_identity_path
+      }
+    }
+  }
+
   dynamic "logging_config" {
     for_each = compact([var.cloudfront_logging_bucket])
 

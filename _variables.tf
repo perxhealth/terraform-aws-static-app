@@ -91,6 +91,12 @@ variable "dynamic_custom_origin_config" {
   default     = []
 }
 
+variable "dynamic_s3_origin_config" {
+  description = "Configuration for the s3 origin config to be used in dynamic block"
+  type        = any
+  default     = []
+}
+
 variable "dynamic_ordered_cache_behavior" {
   description = "Ordered Cache Behaviors to be used in dynamic block"
   type        = any
