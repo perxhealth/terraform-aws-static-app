@@ -64,6 +64,7 @@ resource "aws_cloudfront_distribution" "default" {
     content {
       domain_name = origin.value.domain_name
       origin_id   = origin.value.origin_id
+      origin_path = var.origin_path
 
       s3_origin_config {
         origin_access_identity   = aws_cloudfront_origin_access_identity.default[0].cloudfront_access_identity_path

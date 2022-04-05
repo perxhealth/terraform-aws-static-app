@@ -4,6 +4,11 @@ variable "s3_bucket_ids" {
   type = list(string)
 }
 
+variable "origin_path" {
+  type = string
+  default = null
+}
+
 variable "hostnames" {
   type = list(string)
 }
