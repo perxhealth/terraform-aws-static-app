@@ -115,6 +115,16 @@ variable "module_enabled" {
   default     = true
 }
 
+variable "create_oai" {
+  description = "Enable the module to create oai"
+  default = true
+}
+
+variable "oai_id" {
+  description = "The OAI id to use"
+  default = null
+}
+
 variable "default_cache_behavior_forward_query_string" {
   default     = true
   description = "Default cache behavior forward"

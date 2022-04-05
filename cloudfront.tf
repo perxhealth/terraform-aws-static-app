@@ -1,5 +1,5 @@
 resource "aws_cloudfront_origin_access_identity" "default" {
-  count   = var.module_enabled ? 1 : 0
+  count   = var.module_enabled && var.create_oai ? 1 : 0
   comment = "${var.name}-s3"
 }
 
@@ -67,7 +67,7 @@ resource "aws_cloudfront_distribution" "default" {
       origin_path = var.origin_path
 
       s3_origin_config {
-        origin_access_identity   = aws_cloudfront_origin_access_identity.default[0].cloudfront_access_identity_path
+        origin_access_identity   = data.aws_cloudfront_origin_access_identity.default.cloudfront_access_identity_path
       }
     }
   }
